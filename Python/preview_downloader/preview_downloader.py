@@ -23,7 +23,7 @@ size_limit = 1024.0 * 1024.0
 header = {'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.79 Safari/537.36', 'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9', 'accept-encoding': 'gzip, deflate, br'}
 
 # 更新数据库
-def updateDatabase(name, preview_url, detail_url, size):
+def updateDatabase(name, date, preview_url, detail_url, size):
     # 动态选择数据库服务器地址（如果在 server 端运行，没必要走外网地址）
     ip_address = ''
     if sys.platform.startswith('win'):
@@ -32,7 +32,7 @@ def updateDatabase(name, preview_url, detail_url, size):
         ip_address = '127.0.0.1'
     db = pymysql.connect(ip_address,'klq26','abc123!@#==','video_unique')
     cursor = db.cursor()
-    sql = r"INSERT INTO pornlib(name, preview_url, detail_url, size) VALUES ('{0}', '{1}', '{2}', {3})".format(name, preview_url, detail_url, size)
+    sql = r"INSERT INTO pornlib(name, date, preview_url, detail_url, size) VALUES ('{0}', '{1}', '{2}', '{3}', {4})".format(name, date, preview_url, detail_url, size)
     # print("[SQL] {0}".format(sql))
     cursor.execute(sql)
     db.commit()
@@ -126,7 +126,7 @@ def fetchPreviewVideos():
                             if 'content-length' in response.headers.keys():
                                 fileSize =int(response.headers['content-length'])
                                 # 更新数据库
-                                updateDatabase(name = videoTitle, preview_url = webmVideoUrl, detail_url = hyperlink, size = round(fileSize / size_limit, 2))
+                                updateDatabase(name = videoTitle,date = datetime.now().strftime(('%Y-%m-%d %H:%M:%S')), preview_url = webmVideoUrl, detail_url = hyperlink, size = round(fileSize / size_limit, 2))
                                 print('[Info] Content-Length is: {0:.2f} MB'.format(fileSize / size_limit))
                                 if fileSize <= size_limit:
                                     print('[Downloading..] {0}'.format(videoFilePath))
