@@ -66,13 +66,17 @@ def fetchPreviewVideos():
     host = u'https://www.pornlib.com'
     # 分类
     categories = ['amateur','blonde','bbw','doggystyle','interracial','japanese','asian','milf','mature','hardcore','gangbang','cumshot','lingerie','old-young','outdoor','public','threesome']
+    cate_index = 0
+    cate_pages = 2
+    cate_count = len(categories) * cate_pages
     for category in categories:
         # 每天取前 2 页
-        for i in range(1, 2):
+        for i in range(1, cate_pages + 1):
+            cate_index += 1
             url = u'{0}/{1}/{2}'.format(host, category, i)
             print(url)
             folderName = u'page{0}'.format(i)
-            print(u'{0} {1}'.format(category, folderName))
+            print(u'category: {0} {1} {2} / {3} {4}%'.format(category, folderName, cate_index, cate_count, round(float(cate_index)/cate_count * 100, 2)))
             video_idx = 1
             try:
                 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
@@ -134,9 +138,9 @@ def fetchPreviewVideos():
                                 count += 1
                                 continue
                             count += 1
-                            print('progress: {0} / {1}  {2}%'.format(count, totalCount, round(float(count)/totalCount * 100, 2)))
-                            # 15 秒抓一个，防止被 ban。
-                            time.sleep(5)
+                            print('progress of {0} {1}: {2} / {3}  {4}%'.format(category, folderName, count, totalCount, round(float(count)/totalCount * 100, 2)))
+                            # 10 秒抓一个，防止被 ban。
+                            time.sleep(10)
             except Exception as e:
                 t,v,tb = sys.exc_info()
                 traceback.print_tb(tb)
