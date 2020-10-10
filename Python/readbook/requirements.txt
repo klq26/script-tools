@@ -1,0 +1,4 @@
+# 朗读文字
+pip install pyttsx3
+# 播放 wav
+pip install simpleaudio
